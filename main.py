@@ -11,11 +11,13 @@ async def main():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
 
-        for i in range(0, len(sites), 3):
-            batch = sites[i : i + 3]
-            tasks = [job_worker(site, browser) for site in batch]
-            await asyncio.gather(*tasks)
+        sem = asyncio.Semaphore(3)
 
+        async def wrapped(site):
+            async with sem:
+                await job_worker(site, browser)
+
+        await asyncio.gather(*(wrapped(s) for s in sites))
         await browser.close()
 
 
