@@ -1,7 +1,11 @@
 # custom_handlers/duo.py
 
 
-from custom_handlers.common import extract_root_domain, extract_root_domain_v2
+from custom_handlers.common import (
+    extract_root_domain,
+    extract_root_domain_v2,
+    search_terms,
+)
 
 
 async def handle_duo(page, site):
@@ -23,6 +27,8 @@ async def handle_duo(page, site):
                 href = urljoin(url, href)
 
             print(f"\t[{cleaned_site}] found custom jobs link at {cleaned_site_v2}")
+            text = await page.evaluate("() => document.documentElement.innerText")
+            await search_terms(site, text)
             return True
         else:
             print(f"\t[{cleaned_site}] no jobs link found at {cleaned_site_v2}")
