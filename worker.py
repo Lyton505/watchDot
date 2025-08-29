@@ -15,7 +15,7 @@ async def job_worker(site, browser):
         print("\nResults:")
 
         if "duolingo.com" in site:
-            await handle_duo(page, site)
+            await handle_duo(page, site, search_terms)
             return
         else:
             text = await page.evaluate("() => document.documentElement.innerText")
