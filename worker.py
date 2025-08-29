@@ -1,5 +1,6 @@
-import re
-from custom_handlers.common import search_terms
+from custom_handlers.common import (
+    search_terms,
+)
 from custom_handlers.duo import handle_duo
 
 
@@ -14,11 +15,17 @@ async def job_worker(site, browser):
 
         print("\nResults:")
 
+        try:
+            # we never want to miss intern
+            await page.locator(r"text=/\bintern\b/i").first.wait_for(timeout=15000)
+        except Exception:
+            pass
+
         if "duolingo.com" in site:
             await handle_duo(page, site, search_terms)
             return
-        else:
-            text = await page.evaluate("() => document.documentElement.innerText")
-            await search_terms(site, text)
+
+        text = await page.evaluate("() => document.documentElement.innerText")
+        await search_terms(site, text)
     finally:
         await page.close()
