@@ -1,6 +1,8 @@
 import re
 
-# List of job titles you want to detect
+from custom_handlers.common import extract_root_domain, extract_root_domain_v2
+from custom_handlers.duo import handle_duo
+
 TERMS = [
     "staff ai research engineer",
     "intern",
@@ -18,18 +20,33 @@ async def job_worker(site, browser):
         except Exception:
             pass
 
-        text = await page.evaluate("() => document.documentElement.innerText")
+        print("\nResults:")
 
-        matches = []
-        for term, pattern in zip(TERMS, PATTERNS):
-            if pattern.search(text):
-                matches.append(term)
-                if term == "intern":
-                    print(f"Special term matched: {term} at {site}")
-
-        if matches:
-            print(f"found match(es): {', '.join(matches)} at {site}")
+        if "duolingo.com" in site:
+            await handle_duo(page, site)
+            return
         else:
-            print(f"found no matching jobs at {site}")
+            text = await page.evaluate("() => document.documentElement.innerText")
+
+            cleaned_site = extract_root_domain(site)
+            cleaned_site_v2 = extract_root_domain_v2(site)
+
+            matches = []
+            for term, pattern in zip(TERMS, PATTERNS):
+                if pattern.search(text):
+                    matches.append(term)
+                    if term == "intern":
+                        print(
+                            f"\t[{cleaned_site}] Special term matched: {term} at {cleaned_site_v2}"
+                        )
+
+            if matches:
+                print(
+                    f"\t[{cleaned_site}] found match(es): {', '.join(matches)} at {cleaned_site_v2}\n"
+                )
+            else:
+                print(
+                    f"\t[{cleaned_site}] found no matching jobs at {cleaned_site_v2}\n"
+                )
     finally:
         await page.close()
