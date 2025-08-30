@@ -7,7 +7,7 @@ from custom_handlers.common import extract_root_domain
 
 
 async def main():
-    print("Loading sites from sites.json...")
+    print("\n\n ### New run: Loading sites from sites.json...")
     with open("sites.json", "r") as f:
         sites = json.load(f)
 
