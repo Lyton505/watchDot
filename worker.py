@@ -4,6 +4,7 @@ from custom_handlers.common import (
 )
 from custom_handlers.db_manager import init_db
 from custom_handlers.duo import handle_duo
+from custom_handlers.bloom import handle_bloomberg
 
 
 async def job_worker(site, browser):
@@ -20,13 +21,16 @@ async def job_worker(site, browser):
 
         try:
             # we never want to miss intern
-            await page.locator(r"text=/\bintern\b/i").first.wait_for(timeout=15000)
+            await page.locator(r"text=/\bintern\b/i").first.wait_for(timeout=5000)
         except Exception:
             pass
 
         if "duolingo.com" in site:
             await handle_duo(page, site, search_terms)
             return
+
+        if "bloomberg" in site:
+            await handle_bloomberg(page)
 
         text = await page.evaluate("() => document.documentElement.innerText")
         await search_terms(site, text)

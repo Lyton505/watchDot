@@ -6,7 +6,12 @@ from custom_handlers.db_manager import init_db, already_recorded, record_hit
 from custom_handlers.mailer import send_mail
 
 
-TERMS = ["staff ai research engineer", "intern", "head of duolingo english test"]
+TERMS = [
+    "staff ai research engineer",
+    "intern",
+    "head of duolingo english test",
+    "pmo manager",
+]
 SEP = r"[ \t\r\n\u00A0\u202F\u2007\u2009\u2002\u2003\u2004\u2005\u2006\u205F\u3000\-–—·•|/]+"
 
 
