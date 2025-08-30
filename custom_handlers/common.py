@@ -106,8 +106,12 @@ async def search_terms(site, text) -> list[str]:
             try:
                 resp = send_mail(
                     html=f"""
+                    <div>
                     <h1>Found an internship opening</h1>
-                    <p>Found opening: {term} at {site}</p>
+                    <h2 style="color: blue;">Found opening: {term} at {site}</h2>
+                    <p>Searched term: {normalized_text}</p>
+                    <hr />
+                    </div>
                     """
                 )
             except Exception as e:
