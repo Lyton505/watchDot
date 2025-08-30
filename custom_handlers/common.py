@@ -2,9 +2,11 @@ from urllib.parse import urlparse
 import re
 import tldextract
 import unicodedata
+from custom_handlers.db_manager import init_db, already_recorded, record_hit
+from custom_handlers.mailer import send_mail
+
 
 TERMS = ["staff ai research engineer", "intern", "head of duolingo english test"]
-
 SEP = r"[ \t\r\n\u00A0\u202F\u2007\u2009\u2002\u2003\u2004\u2005\u2006\u205F\u3000\-–—·•|/]+"
 
 
@@ -78,25 +80,50 @@ def extract_root_domain(url: str) -> str:
 
 
 async def search_terms(site, text) -> list[str]:
-    """
-    Search for job-related terms in the given text.
-    """
-
     cleaned_site = extract_root_domain(site)
     cleaned_site_v2 = extract_root_domain_v2(site)
-
     normalized_text = _normalize(text)
 
     matches = []
     for term, pattern in zip(TERMS, PATTERNS):
         match = pattern.search(normalized_text)
-        if match:
-            # print(f"Pattern found: {match.group()} for term '{term}' in text.")
-            matches.append(term)
-            if term == "intern":
+        if not match:
+            continue
+
+        matches.append(term)
+
+        if term == "intern":
+            if await already_recorded(cleaned_site, term):
                 print(
-                    f"\t[{cleaned_site}] Special term matched: {term} at {cleaned_site_v2}"
+                    f"\t[{cleaned_site}] already sent/recorded for '{term}'. Skipping."
                 )
+                continue
+
+            print(
+                f"\t[{cleaned_site}] Special term matched: {term} at {cleaned_site_v2}"
+            )
+
+            try:
+                resp = send_mail(
+                    html=f"""
+                    <h1>Found an internship opening</h1>
+                    <p>Found opening: {term} at {site}</p>
+                    """
+                )
+            except Exception as e:
+                print(f"\t[{cleaned_site}] send_mail failed: {e!r}")
+            else:
+                inserted = await record_hit(
+                    site=site,
+                    root_domain=cleaned_site,
+                    root_domain_v2=cleaned_site_v2,
+                    term=term,
+                    email_json=resp if isinstance(resp, dict) else None,
+                )
+                if inserted:
+                    print(f"\t[{cleaned_site}] recorded 'intern' hit.")
+                else:
+                    print(f"\t[{cleaned_site}] duplicate ignored.")
 
     if matches:
         print(

@@ -95,12 +95,12 @@ def send_mail(html):
         "content": html,
         "mailFormat": "html",
     }
-    r = requests.post(url, headers=headers, json=body, timeout=30)
-    r.raise_for_status()
+
+    try:
+        print(f"\tSending notification email to {to_addr}...")
+        r = requests.post(url, headers=headers, json=body, timeout=30)
+        r.raise_for_status()
+    except requests.RequestException as e:
+        print(f"Error sending email: {e}")
+
     return r.json()
-
-
-send_mail(
-    mail_host=secrets.ZOHO_MAIL_HOST,
-    html="<h1>Hello</h1><p>This is a test email.</p>",
-)

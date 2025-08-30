@@ -1,10 +1,13 @@
+from mimetypes import init
 from custom_handlers.common import (
     search_terms,
 )
+from custom_handlers.db_manager import init_db
 from custom_handlers.duo import handle_duo
 
 
 async def job_worker(site, browser):
+
     page = await browser.new_page()
     try:
         await page.goto(site, wait_until="domcontentloaded", timeout=45000)
