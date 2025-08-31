@@ -114,7 +114,6 @@ async def search_terms(site, text) -> list[str]:
                     <div>
                     <h1>Found an internship opening</h1>
                     <h2 style="color: blue;">Found opening: {term} at {site}</h2>
-                    <p>Searched term: {normalized_text}</p>
                     <hr />
                     </div>
                     """
