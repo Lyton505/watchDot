@@ -17,7 +17,7 @@ async def main():
     print(f"Loaded {len(sites)} sites. Initializing browser...\n")
     async with async_playwright() as p:
         browser = await p.chromium.launch(
-            headless=True, args=["--disable-gpu", "--use-gl=swiftshader"]
+            headless=False, args=["--disable-gpu", "--use-gl=swiftshader"]
         )
 
         context_browser = await browser.new_context(
