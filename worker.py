@@ -5,6 +5,7 @@ from custom_handlers.duo import handle_duo
 from custom_handlers.bloom import handle_bloomberg
 from custom_handlers.intuit import handle_intuit
 from custom_handlers.ebay import handle_ebay
+from custom_handlers.gemini import handle_gemini
 
 
 async def job_worker(site, browser):
@@ -38,6 +39,10 @@ async def job_worker(site, browser):
 
         if "ebayinc.com" in site:
             await handle_ebay(page, site)
+            return
+
+        if "gemini.com" in site:
+            await handle_gemini(page, site)
             return
 
         text = await page.evaluate("() => document.documentElement.innerText")

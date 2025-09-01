@@ -11,6 +11,7 @@ TERMS = [
     "intern",
     "head of duolingo english test",
     "pmo manager",
+    "onchain",
 ]
 SEP = r"[ \t\r\n\u00A0\u202F\u2007\u2009\u2002\u2003\u2004\u2005\u2006\u205F\u3000\-–—·•|/]+"
 
