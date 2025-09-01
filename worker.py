@@ -5,6 +5,7 @@ from custom_handlers.common import (
 from custom_handlers.db_manager import init_db
 from custom_handlers.duo import handle_duo
 from custom_handlers.bloom import handle_bloomberg
+from custom_handlers.intuit import handle_intuit
 
 
 async def job_worker(site, browser):
@@ -31,6 +32,10 @@ async def job_worker(site, browser):
 
         if "bloomberg" in site:
             await handle_bloomberg(page)
+
+        if "intuit.com" in site:
+            await handle_intuit(page, site)
+            return
 
         text = await page.evaluate("() => document.documentElement.innerText")
         await search_terms(site, text)
