@@ -16,14 +16,23 @@ async def main():
 
     print(f"Loaded {len(sites)} sites. Initializing browser...\n")
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
+        browser = await p.chromium.launch(
+            headless=False, args=["--disable-gpu", "--use-gl=swiftshader"]
+        )
+
+        context_browser = await browser.new_context(
+            user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/140.0.7339.16 Safari/537.36",
+            locale="en-US",
+            viewport={"width": 1280, "height": 800},
+        )
 
         sem = asyncio.Semaphore(3)
 
         async def wrapped(site):
             async with sem:
                 print(f"Processing {extract_root_domain(site)}...")
-                await job_worker(site, browser)
+                await job_worker(site, context_browser)
 
         await asyncio.gather(*(wrapped(s) for s in sites))
         await browser.close()
