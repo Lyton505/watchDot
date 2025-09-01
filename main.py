@@ -27,7 +27,7 @@ async def main():
             viewport={"width": 1280, "height": 800},
         )
 
-        sem = asyncio.Semaphore(1)
+        sem = asyncio.Semaphore(3)
 
         async def wrapped(site):
             async with sem:
