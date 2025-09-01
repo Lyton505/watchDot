@@ -7,6 +7,9 @@ async def handle_intuit(page, site):
     await search_box.fill("intern")
     await search_box.press("Enter")
 
+    print(await page.evaluate("navigator.userAgent"))
+    print(await page.evaluate("navigator.webdriver"))
+
     await page.get_by_role("button", name="Country").click()
 
     await page.get_by_label("United States").click()
