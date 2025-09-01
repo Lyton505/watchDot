@@ -8,7 +8,7 @@ from custom_handlers.common import extract_root_domain
 
 async def main():
     print("\n\n ### New run: Loading sites from sites.json...")
-    with open("test-sites.json", "r") as f:
+    with open("sites.json", "r") as f:
         sites = json.load(f)
 
     print("Initializing database...")
