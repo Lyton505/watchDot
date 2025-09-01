@@ -1,11 +1,10 @@
-from mimetypes import init
 from custom_handlers.common import (
     search_terms,
 )
-from custom_handlers.db_manager import init_db
 from custom_handlers.duo import handle_duo
 from custom_handlers.bloom import handle_bloomberg
 from custom_handlers.intuit import handle_intuit
+from custom_handlers.ebay import handle_ebay
 
 
 async def job_worker(site, browser):
@@ -35,6 +34,10 @@ async def job_worker(site, browser):
 
         if "intuit.com" in site:
             await handle_intuit(page, site)
+            return
+
+        if "ebayinc.com" in site:
+            await handle_ebay(page, site)
             return
 
         text = await page.evaluate("() => document.documentElement.innerText")
