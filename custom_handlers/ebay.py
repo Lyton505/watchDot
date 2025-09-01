@@ -15,14 +15,20 @@ async def handle_ebay(page, site):
 
     try:
         await select_first_country_result(page)
+        jobs_text = await page.evaluate(
+            """
+    () => {
+        const jobsList = document.querySelector('.phs-jobs-list');
+        return jobsList ? jobsList.innerText : '';
+    }
+"""
+        )
+
+        await search_terms(site, jobs_text)
     except Exception as e:
         logger.error(f"Error in country selection: {str(e)}")
 
     return
-
-    # This code is unreachable due to the return statement above
-    text = await section.inner_text()
-    await search_terms(site, text)
 
 
 async def handle_cookie_popup(page):
