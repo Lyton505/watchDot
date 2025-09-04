@@ -5,8 +5,6 @@ from custom_handlers.common import search_terms
 
 
 async def handle_bloomberg(page, site):
-    print("Handling Bloomberg...")
-
     # handle search for internships
     await page.get_by_role("combobox", name="Experience Level").click()
     await page.get_by_role("searchbox", name="Experience Level").fill("intern")
@@ -19,8 +17,6 @@ async def handle_bloomberg(page, site):
 
     # submit form
     await page.get_by_role("button", name="Submit").click()
-
-    await asyncio.sleep(2)
 
     text = await page.evaluate("() => document.documentElement.innerText")
     await search_terms(site, text)

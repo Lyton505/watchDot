@@ -86,6 +86,7 @@ def extract_root_domain(url: str) -> str:
 
 
 async def search_terms(site, text) -> list[str]:
+
     cleaned_site = extract_root_domain(site)
     cleaned_site_v2 = extract_root_domain_v2(site)
     normalized_text = _normalize(text)

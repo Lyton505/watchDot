@@ -18,8 +18,6 @@ async def job_worker(site, browser):
         except Exception:
             pass
 
-        print("\nResults:")
-
         try:
             # we never want to miss intern
             await page.locator(r"text=/\bintern\b/i").first.wait_for(timeout=5000)

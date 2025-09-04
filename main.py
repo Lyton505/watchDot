@@ -7,7 +7,10 @@ from custom_handlers.common import extract_root_domain
 
 
 async def main():
-    print("\n\n ### New run: Loading sites from sites.json...")
+    print("\n\n%50s" % "#################################################")
+    print("%50s" % "########New run: Loading sites from sites.json########")
+    print("%50s" % "#################################################")
+
     with open("sites.json", "r") as f:
         sites = json.load(f)
 
@@ -32,6 +35,7 @@ async def main():
         async def wrapped(site):
             async with sem:
                 print(f"Processing {extract_root_domain(site)}...")
+                print("\nResults:")
                 await job_worker(site, context_browser)
 
         await asyncio.gather(*(wrapped(s) for s in sites))
