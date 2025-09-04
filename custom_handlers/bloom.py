@@ -1,9 +1,10 @@
 from playwright.async_api import expect
 import re
 import asyncio
+from custom_handlers.common import search_terms
 
 
-async def handle_bloomberg(page):
+async def handle_bloomberg(page, site):
     print("Handling Bloomberg...")
 
     # handle search for internships
@@ -19,7 +20,10 @@ async def handle_bloomberg(page):
     # submit form
     await page.get_by_role("button", name="Submit").click()
 
-    await asyncio.sleep(10)
+    await asyncio.sleep(2)
+
+    text = await page.evaluate("() => document.documentElement.innerText")
+    await search_terms(site, text)
 
 
 async def ensure_business_area(

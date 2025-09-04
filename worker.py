@@ -31,7 +31,8 @@ async def job_worker(site, browser):
             return
 
         if "bloomberg" in site:
-            await handle_bloomberg(page)
+            await handle_bloomberg(page, site)
+            return
 
         if "intuit.com" in site:
             await handle_intuit(page, site)
